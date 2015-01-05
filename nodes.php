@@ -6,11 +6,7 @@ echo "\n\n" . __FILE__ . "\n\n";
 
 /*
 $types = array(
-	'article' => 'dshed_article',
-	'background_image' => 'dshed_background_image',
-	'featured_item' => 'dshed_featured_item',
-	'item_set' => 'dshed_item_set',
-	'project' => 'dshed_project',
+
 	'page' => 'page',
 	'twitterfeed' => 'twitterfeed',
 	);

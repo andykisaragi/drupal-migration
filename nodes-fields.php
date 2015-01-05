@@ -106,7 +106,7 @@ foreach ($single_fields as $type => $fields){
 
 		echo "Data: ";
 		$sql = "INSERT INTO {$new_prefix}field_data_$field 
-		SELECT 'node', 'dshed_$type', 0, nid+$nid_offset, nid+$nid_offset, 'und', 0, $select_field
+		SELECT 'node', '$type', 0, nid+$nid_offset, nid+$nid_offset, 'und', 0, $select_field
 		FROM $old_db.{$old_prefix}content_type_{$type} c 
 		WHERE {$field}_{$suffix} IS NOT NULL;
 		";
@@ -117,7 +117,7 @@ foreach ($single_fields as $type => $fields){
 		if(!$result) { echo "\n" . mysql_error() . "\n"; }else{ echo " ...done... ";}
 		echo "Revisions: ";
 		$sql = "INSERT INTO {$new_prefix}field_revision_$field 
-		SELECT 'node', 'dshed_$type', 0, nid+$nid_offset, nid+$nid_offset, 'und', 0, $select_field
+		SELECT 'node', '$type', 0, nid+$nid_offset, nid+$nid_offset, 'und', 0, $select_field
 		FROM $old_db.{$old_prefix}content_type_{$type} c 
 		WHERE {$field}_{$suffix} IS NOT NULL;
 		";
@@ -166,7 +166,7 @@ foreach ($multi_fields as $field => $suffix){
 	echo "Data: ";
 	$sql = "
 	INSERT INTO {$new_prefix}field_data_$field 
-	SELECT 'node', CONCAT('dshed_',n.type), 0, c.nid+$nid_offset, c.nid+$nid_offset, 'und', $delta, $select_field
+	SELECT 'node', n.type, 0, c.nid+$nid_offset, c.nid+$nid_offset, 'und', $delta, $select_field
 	FROM $old_db.{$old_prefix}content_{$field} c LEFT JOIN $old_db.{$old_prefix}node n ON c.nid = n.nid
 	WHERE c.{$field}_{$suffix} IS NOT NULL;
 	";
@@ -178,7 +178,7 @@ foreach ($multi_fields as $field => $suffix){
 	echo "Revisions: ";
 	$sql = "
 	INSERT INTO {$new_prefix}field_revision_$field 
-	SELECT 'node', CONCAT('dshed_',n.type), 0, c.nid+$nid_offset, c.nid+$nid_offset, 'und', $delta, $select_field
+	SELECT 'node', n.type, 0, c.nid+$nid_offset, c.nid+$nid_offset, 'und', $delta, $select_field
 	FROM $old_db.{$old_prefix}content_{$field} c LEFT JOIN $old_db.{$old_prefix}node n ON c.nid = n.nid
 	WHERE c.{$field}_{$suffix} IS NOT NULL;
 	";

@@ -11,10 +11,7 @@ echo "\n\n" . __FILE__ . "\n\n";
 
 
 // shared fields
-$fields = array("field_background_image",
-	"field_featured_items",
-	"field_item_sets",
-	"field_projects", );
+$fields = array( );
 
 $nid_offset = NID_OFFSET;
 
@@ -36,7 +33,7 @@ AND t.table_name = '$src_table'";
 
 	echo "Data: ";
 	$sql = "INSERT INTO {$new_prefix}field_data_$field 
-	SELECT 'node', CONCAT('dshed_',n.type), 0, c.nid+$nid_offset, c.nid+$nid_offset, 'und', $delta, c.{$field}_nid+$nid_offset
+	SELECT 'node', n.type, 0, c.nid+$nid_offset, c.nid+$nid_offset, 'und', $delta, c.{$field}_nid+$nid_offset
 	FROM $old_db.{$src_table} c LEFT JOIN $old_db.{$old_prefix}node n ON c.nid = n.nid
 	WHERE c.{$field}_nid > 0 AND c.{$field}_nid IS NOT NULL;";
 
@@ -47,7 +44,7 @@ AND t.table_name = '$src_table'";
 
 	echo "Revisions: ";
 	$sql = "INSERT INTO {$new_prefix}field_revision_$field 
-	SELECT 'node', CONCAT('dshed_',n.type), 0, c.nid+$nid_offset, c.nid+$nid_offset, 'und', $delta, c.{$field}_nid+$nid_offset
+	SELECT 'node', n.type, 0, c.nid+$nid_offset, c.nid+$nid_offset, 'und', $delta, c.{$field}_nid+$nid_offset
 	FROM $old_db.{$src_table} c LEFT JOIN $old_db.{$old_prefix}node n ON c.nid = n.nid
 	WHERE c.{$field}_nid > 0 AND c.{$field}_nid IS NOT NULL;";
 
@@ -61,29 +58,42 @@ AND t.table_name = '$src_table'";
 }
 
 // fields only in one type
-$fields = array();
+$types_fields = array(
+	"course" => array(
+		"field_course_location" => 'field_location_ref',
+		"field_course_institution" => "field_institution",
+	),
+	"uni_location" => array(
+		"field_uni_location_institution" => "field_institution"
+	)
 
-foreach ($fields as $type => $field){
+);
 
-	echo "\nImport Node References for $field\n";
-	echo "Data: ";
-	$sql = "
-	INSERT INTO {$new_prefix}field_data_$field 
-	SELECT 'node', '$type', 0, nid, vid, 'und', 0, {$field}_nid
-	FROM $old_db.{$old_prefix}content_type_{$type} c 
-	WHERE {$field}_nid > 0 AND {$field}_nid IS NOT NULL;
-	";
-	$result = mysql_query($sql);
-	if(!$result) { echo $sql . "\n" . mysql_error() . "\n"; }else{ echo " ...done\n";}
-	echo "Revisions: ";
-	$sql = "
-	INSERT INTO {$new_prefix}field_revision_$field 
-	SELECT 'node', '$type', 0, nid, vid, 'und', 0, {$field}_nid
-	FROM $old_db.{$old_prefix}content_type_{$type} c 
-	WHERE {$field}_nid > 0 AND {$field}_nid IS NOT NULL;
-	";
-	$result = mysql_query($sql);
-	if(!$result) { echo $sql . "\n" . mysql_error() . "\n"; }else{ echo " ...done\n";}
-	
+foreach ($types_fields as $type => $fields){
 
+	foreach($fields as $src_field => $target_field){
+
+
+		echo "\nImport Node References for $src_field\n";
+		echo "Data: ";
+		$sql = "
+		INSERT INTO {$new_prefix}field_data_$target_field 
+		SELECT 'node', '$type', 0, nid, vid, 'und', 0, {$src_field}_nid
+		FROM $old_db.{$old_prefix}content_type_{$type} c 
+		WHERE {$src_field}_nid > 0 AND {$src_field}_nid IS NOT NULL;
+		";
+		echo $sql . "\n";
+		$result = mysql_query($sql);
+		if(!$result) { echo $sql . "\n" . mysql_error() . "\n"; }else{ echo " ...done\n";}
+		echo "Revisions: ";
+		$sql = "
+		INSERT INTO {$new_prefix}field_revision_$target_field 
+		SELECT 'node', '$type', 0, nid, vid, 'und', 0, {$src_field}_nid
+		FROM $old_db.{$old_prefix}content_type_{$type} c 
+		WHERE {$src_field}_nid > 0 AND {$src_field}_nid IS NOT NULL;
+		";
+		$result = mysql_query($sql);
+		if(!$result) { echo $sql . "\n" . mysql_error() . "\n"; }else{ echo " ...done\n";}
+		
+	}
 }

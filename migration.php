@@ -26,7 +26,7 @@ mysql_select_db($new_db,$conn);
 
 	require_once "functions.php";
 	
-	require_once "delete-everything.php";
+	//require_once "delete-everything.php";
 	
 	//require_once "startup.php";
 	
@@ -34,8 +34,10 @@ mysql_select_db($new_db,$conn);
 	//require_once "nodes.php";
 	//require_once "create-fields.php";
 	
-	require_once "nodes-fields.php";
+	//require_once "nodes-fields.php";
 	
+	//require_once "location-geofield.php";
+
 	//require_once "taxonomy_data.php";
 	//require_once "taxonomy.php";
 
@@ -60,11 +62,11 @@ mysql_select_db($new_db,$conn);
 	//
 	//require_once "node-webform.php";/
 	
-	/*
-	require_once "nodes-fields.php";
+	
+	//require_once "nodes-fields.php";
 	require_once "references.php";
-	require_once "files.php";
-	require_once "nodes-file-fields.php";*/
+	//require_once "files.php";
+	//require_once "nodes-file-fields.php";
 
 	//require_once "fix-languages.php";
 	//require_once "fix-aliases.php";
